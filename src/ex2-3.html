@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>rxjs</title>
+    <script src="lib/rx.all.min.js"></script>
+    <script src="lib/timeline.js"></script>
+    <link rel="stylesheet" type="text/css" href="lib/timeline.css">
+</head>
+<body>
+	<script>
+		window.onload = function(){
+			var timeline = new TimelineDOM("demo");
+			
+			var source = Rx.Observable.range(10, 6);
+
+			var subscription = source.subscribe(
+				function (x) { timeline.next(x); },
+				function (err) { timeline.error(err); },
+				function () { timeline.completed(); });
+		}    
+	</script>
+</body>
+</html>

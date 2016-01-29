@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>rxjs</title>
+    <script src="lib/rx.all.min.js"></script>
+    <script src="lib/timeline.js"></script>
+    <link rel="stylesheet" type="text/css" href="lib/timeline.css">
+</head>
+<body>
+	<script>
+		window.onload = function(){
+			var TL = TimelineDOM;
+			var timelines = [
+				new TL("from(Array)"),
+				new TL("from(String)"),
+				new TL("from(Set)"),
+				new TL("from(Map)"),
+				new TL("Pairs(JSON)")
+			];
+
+			var sources = [
+				Rx.Observable.from([1,2,3]),	
+				Rx.Observable.from("football"),
+				Rx.Observable.from(new Set(["foo", "bar"])),
+				Rx.Observable.from(new Map([[1, 2], [2, 4], [4, 8]])),
+				Rx.Observable.pairs({
+					name: "Elton John",
+					age: 66,
+					citizen: "UK"
+				})
+			];
+			sources.forEach(function(s,i){
+				s.subscribe(
+					function (x) { timelines[i].next(JSON.stringify(x)); },
+					function (err) { timelines[i].error(err); },
+					function () { timelines[i].completed(); }
+				);
+			});
+
+			Rx.Observable.from([1, 2, 3], function (x) { return x + x; }).subscribe(
+			  function (x) { console.log('Next: ' + x); },
+			  function (err) { console.log('Error: ' + err); },
+			  function () { console.log('Completed'); });
+
+			// Generate a sequence of numbers
+			Rx.Observable.from({length: 5}, function(v, k) { return k; }).subscribe(
+			  function (x) { console.log('Next: ' + x); },
+			  function (err) { console.log('Error: ' + err); },
+			  function () { console.log('Completed'); }); 
+		}  
+	</script>
+</body>
+</html>

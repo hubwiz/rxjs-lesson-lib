@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>rxjs</title>
+    <script src="lib/rx.all.min.js"></script>
+	<script src="lib/timeline.js"></script>
+    <link rel="stylesheet" type="text/css" href="lib/timeline.css">       
+</head>
+<body>
+	<script>
+		window.onload = function(){
+			var TL = TimelineCanvas;
+			var timelines = [
+				new TL("source1"),
+				new TL("source2"),
+				new TL("withLatestForm")
+			];
+			var source1 = Rx.Observable.interval(1500);
+
+			var source2 = Rx.Observable.interval(2300)
+				.map(function (i) { return String.fromCharCode(65 + i % 26); });
+
+			// When source1 emits a value, combine it with the latest emission from source2.
+			var target = source1.withLatestFrom(
+				source2,
+				function (s1, s2) { return s1 + s2; }
+			);
+			
+			[source1,source2,target].forEach(function(s,i){
+				s.subscribe(
+					function (x) { timelines[i].next(x.toString()); },
+					function (err) { timelines[i].error( err);},
+					function () {timelines[i].completed(); }
+				);
+			});
+
+		}    
+	</script>
+</body>
+</html>

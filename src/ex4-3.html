@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>rxjs</title>
+    <script src="lib/rx.all.min.js"></script>
+	<script src="lib/timeline.js"></script>
+    <link rel="stylesheet" type="text/css" href="lib/timeline.css">       
+</head>
+<body>
+	<script>
+		window.onload = function(){
+			var TL = TimelineDOM;
+			var timelines = [
+				new TL("source"),
+				new TL("flatMap")
+			];
+			var source = Rx.Observable.timer(0,1000).take(2)
+				.map(function(d){ return String.fromCharCode(65 + d )});
+			var target = source.flatMap(function (x) {
+					return Rx.Observable.range(0, 10).map(function(d){ return x + d });
+				});
+			[source,target].forEach(function(s,i){
+				s.subscribe(
+					function (x) { timelines[i].next(x); },
+					function (err) { timelines[i].error(err); },
+					function () { timelines[i].completed(); }
+				);  
+			});
+		}    
+	</script>
+</body>
+</html>

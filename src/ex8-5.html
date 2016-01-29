@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>rxjs</title>
+    <script src="lib/rx.all.min.js"></script>
+	<script src="lib/timeline.js"></script>
+    <link rel="stylesheet" type="text/css" href="lib/timeline.css">       
+</head>
+<body>
+	<script>
+		window.onload = function(){
+			var TL = TimelineDOM;
+			var timelines = [
+				new TL("source"),
+				new TL("startWith")
+			]
+			var source = Rx.Observable.range(0,4);
+			var target = source.startWith(-3,-2,-1);
+			[source,target].forEach(function(s,i){
+				s.subscribe(
+					function (x) { timelines[i].next(x); },
+					function (err) { timelines[i].error(err); },
+					function () { timelines[i].completed(); } 
+				);
+			});
+		}  
+	</script>
+</body>
+</html>

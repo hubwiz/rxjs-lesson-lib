@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>rxjs</title>
+    <script src="lib/rx.all.min.js"></script>
+    <script src="lib/timeline.js"></script>
+    <link rel="stylesheet" type="text/css" href="lib/timeline.css">    
+</head>
+<body>
+	<script>
+		window.onload = function(){
+			var TL = TimelineCanvas;
+			var timelines = [new TL("empty"),new TL("never"),new TL("throw")];
+			
+			var sources = [
+				Rx.Observable.empty(),
+				Rx.Observable.never(),
+				Rx.Observable.throw(new Error("a fake error"))
+			];
+			
+			sources.forEach(function(s,i){
+				s.subscribe(
+					function (x) { timelines[i].next(x); },
+					function (err) { timelines[i].error(err); },
+					function () { timelines[i].completed(); }
+				);
+			});
+		}    
+	</script>
+</body>
+</html>

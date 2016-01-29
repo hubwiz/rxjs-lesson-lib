@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>rxjs</title>
+    <script src="lib/rx.all.min.js"></script>
+	<script src="lib/timeline.js"></script>
+    <link rel="stylesheet" type="text/css" href="lib/timeline.css">       
+</head>
+<body>
+	<script>
+		window.onload = function(){
+			var TL = TimelineCanvas;
+			var timelines = [
+				new TL("source"),
+				new TL("delay"),
+				new TL("delaySubscription")
+			];
+			var source = Rx.Observable.timer(0,1000);
+			var target1 = source.delay(2000);
+			var target2 = source.delaySubscription(3500);
+
+			[source,target1,target2].forEach(function(s,i){
+				s.subscribe(
+					function (x) { timelines[i].next(x); },
+					function (err) { timelines[i].error(err); },
+					function () { timelines[i].completed(); }); 
+			});
+		}
+	</script>
+</body>
+</html>

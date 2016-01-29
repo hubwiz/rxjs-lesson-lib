@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>rxjs</title>
+    <script src="lib/rx.all.min.js"></script>
+    <script src="lib/timeline.js"></script>
+    <link rel="stylesheet" type="text/css" href="lib/timeline.css">
+</head>
+<body>
+	<script>
+		window.onload = function(){
+			var TLC = TimelineCanvas, TLD = TimelineDOM;
+			var timelines = [
+				new TLC("TimelineCanvas"),
+				new TLD("TimelineDOM")
+			];    
+			var source = Rx.Observable.create(function(observer){
+				var i = 10;        
+				var timer = setInterval(function(){
+					observer.onNext(i--);
+					if(i < 0){
+						observer.onCompleted();
+						clearInterval(timer);
+					}
+				},1000);    	
+			});
+			source.subscribe(
+				function (x) { 
+					timelines[0].next(x);
+					timelines[1].next(x);
+				},
+				function (err) { 
+					timelines[0].error(err); 
+					timelines[1].error(err); 
+				},
+				function () {  
+					timelines[0].completed(); 
+					timelines[1].completed(); 
+				}
+			);
+
+
+		}    
+	</script>
+</body>
+</html>

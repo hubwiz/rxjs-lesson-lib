@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>rxjs</title>
+    <script src="lib/rx.all.min.js"></script>
+	<script src="lib/timeline.js"></script>
+    <link rel="stylesheet" type="text/css" href="lib/timeline.css">       
+</head>
+<body>
+	<script>
+		window.onload = function(){
+			var TL = TimelineCanvas;
+			var timelines = [
+				new TL("source"),
+				new TL("windowWithCount")
+			];
+			
+			var source = Rx.Observable.timer(0,1000).take(10);
+			var target = source.windowWithCount(4,4);
+			[source,target].forEach(function(s,i){
+				var winid = 0;
+				s.subscribe(
+					function (x) { 
+						if(i===0){
+							timelines[i].next(x); 
+						}
+						else if(i===1){
+							timelines[i].next( 'win-' + winid ); 
+							var tl = new TL('win-' + winid);
+							x.subscribe(
+								function(d){ tl.next(d)},
+								function(err){ tl.error(err);},
+								function(){ tl.completed();}
+							);
+							winid++;
+						}
+					},
+					function (err) { timelines[i].error(err); },
+					function () { timelines[i].completed(); }
+				);
+			});
+		}
+	</script>
+</body>
+</html>

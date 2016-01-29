@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>rxjs</title>
+    <script src="lib/rx.all.min.js"></script>
+    <script src="lib/timeline.js"></script>
+    <link rel="stylesheet" type="text/css" href="lib/timeline.css">
+</head>
+<body>
+	<p><button id="input">click me</button></p>
+	<script>
+		window.onload = function(){
+			var TL = TimelineCanvas;
+			var timelines = [
+				new TL("fromEvent"),
+				new TL("fromEventPattern")
+			]        
+			
+			var input = document.getElementById("input");
+			var target1 = Rx.Observable.fromEvent(input, 'click');
+			var target2 = Rx.Observable.fromEventPattern(
+				function(handler) {  
+					input.addEventListener('click', handler); 
+					input.addEventListener('mouseover', handler); 
+					input.addEventListener('mouseout', handler); 
+				},
+				function(handler) {  
+					input.removeEventListener('click', handler);
+					input.removeEventListener('mouseover', handler); 
+					input.removeEventListener('mouseout', handler); 
+				}
+			);
+			[target1,target2].forEach(function(s,i){
+				s.subscribe(
+					function (data) { timelines[i].next(data.type); },
+					function (err) { timelines[i].error(err); },
+					function () { timelines[i].completed(); }
+				);
+			});
+
+		};
+	</script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>rxjs</title>
+    <script src="lib/rx.all.min.js"></script>
+	<style>
+		@font-face {
+		  font-family:"LED";
+		  src:url("font/LED.eot?") format("eot"),
+		  url("font/LED.woff") format("woff"),
+		  url("font/LED.ttf") format("truetype"),
+		  url("font/LED.svg#LED") format("svg");
+		  font-weight:normal;
+		  font-style:normal;
+		}
+		.ez-led{
+		  transition: all 1s;
+		  font-family : "LED";
+		  font-size : 40px;
+		  background : #70d355;
+		  width: 300px;
+		  height:60px;
+		  line-height : 60px;
+		  text-align : right;
+		  padding : 10px;
+		  letter-spacing:5px;
+		}
+		.ez-led.completed{
+		  color: #666;
+		  background: #689e59;
+		}
+	</style>
+</head>
+<body>
+	<div class="ez-led" id="clock">--</div>
+	<script>
+		window.onload = function(){
+			var elClock = document.getElementById("clock");
+			var tickStream = Rx.Observable.create(function(observer){
+				var i = 10;        
+				var timer = setInterval(function(){
+					observer.onNext(i--);
+					if(i < 0){
+						observer.onCompleted();
+						clearInterval(timer);
+					}
+				},1000);    	
+			});
+			var uiRefresher = Rx.Observer.create(function(data){
+				elClock.textContent = data;
+			},function(err){},function(){
+				elClock.classList.add("completed");
+			});
+			tickStream.subscribe(uiRefresher);
+		}
+	</script>
+</body>
+</html>

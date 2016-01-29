@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>rxjs</title>
+    <script src="lib/rx.all.min.js"></script>
+	<script src="lib/timeline.js"></script>
+    <link rel="stylesheet" type="text/css" href="lib/timeline.css">       
+</head>
+<body>
+	<script>
+		window.onload = function(){
+			var TL = TimelineCanvas;
+			var timelines = [
+				new TL("source"),
+				new TL("catch")
+			];
+			var source = Rx.Observable.create(function(observer){
+				observer.onNext("A");
+				setTimeout(function(){
+					observer.onNext("X");
+					setTimeout(function(){
+						observer.onError(new Error("what the fucking are you doing."));
+						observer.onNext("T");
+					},1000);
+				},1500);
+			});
+			var target = source.catch(Rx.Observable.interval(1200).take(4));
+			[source,target].forEach(function(s,i){
+				s.subscribe(
+					function(d){ timelines[i].next(d);},
+					function(e){ timelines[i].error(e);},
+					function(){ timelines[i].completed();}
+				);
+			});
+		}
+	</script>
+</body>
+</html>

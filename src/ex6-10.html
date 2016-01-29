@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>rxjs</title>
+    <script src="lib/rx.all.min.js"></script>
+	<script src="lib/timeline.js"></script>
+    <link rel="stylesheet" type="text/css" href="lib/timeline.css">       
+</head>
+<body>
+	<script>
+		window.onload = function(){
+			var TL = TimelineCanvas;
+			var timelines = [
+				new TL("source"),
+				new TL("first"),
+				new TL("last")
+			];
+			var source = Rx.Observable.from(["hello","help","who","huge","what","gain"])
+				.flatMap(function(item,i){
+					return Rx.Observable.of(item).delay(i*1000)
+				});
+			var pf = function (x, idx, obs) { 
+				return x.match(/^wh/); 
+			};    
+			var target1 = source.first(pf);
+			var target2 = source.last(pf);
+			[source, target1 , target2].forEach(function(s,i){
+				s.subscribe(
+					function (x) { timelines[i].next(x); },
+					function (err) { timelines[i].error(err); },
+					function () { timelines[i].completed(); }
+				);
+			});
+
+		}    
+	</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>rxjs</title>
+    <script src="lib/rx.all.min.js"></script>
+	<script src="lib/timeline.js"></script>
+    <link rel="stylesheet" type="text/css" href="lib/timeline.css">       
+</head>
+<body>
+	<script>
+		window.onload = function(){
+			var TL = TimelineCanvas;
+			var timelines = [
+				new TL("source"),
+				new TL("takeUntilWithTime"),
+				new TL("takeLastWithTime")
+			];
+			var source = Rx.Observable.interval(1000).take(10);
+			var target1 = source.takeUntilWithTime(2300);
+			var target2 = source.takeLastWithTime(3100)
+				.flatMap(function(d,i){ return Rx.Observable.of(d).delay(i*1000);});
+			[source,target1,target2].forEach(function(s,i){
+				s.subscribe(
+					function (x) { timelines[i].next(x); },
+					function (err) { timelines[i].error(err); },
+					function () { timelines[i].completed(); }
+				);
+			});
+		}    
+	</script>
+</body>
+</html>

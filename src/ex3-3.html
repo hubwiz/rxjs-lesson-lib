@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>rxjs</title>
+    <script src="lib/rx.all.min.js"></script>
+	<script src="lib/timeline.js"></script>
+    <link rel="stylesheet" type="text/css" href="lib/timeline.css">       
+</head>
+<body>
+	<script>
+		window.onload = function(){
+			var TL = TimelineCanvas;
+			var timelines = [
+				new TL("source"),
+				new TL("timeout")
+			];
+			var data = [
+				{ts:0,val:'A'},
+				{ts:1000,val:'B'},
+				{ts:2000,val:'C'},
+				{ts:3500,val:'D'},
+				{ts:4000,val:'E'}
+			];
+			var source = Rx.Observable.from(data)
+				.flatMap(function(d){ return Rx.Observable.of(d.val).delay(d.ts);})
+			var target = source.timeout(1200, 'Timeout has occurred.');
+			[source,target].forEach(function(s,i){
+				s.subscribe(
+				  function (x) { timelines[i].next(x); },
+				  function (err) { timelines[i].error(err); },
+				  function () { timelines[i].completed(); }
+				);
+			});
+		}  
+	</script>
+</body>
+</html>

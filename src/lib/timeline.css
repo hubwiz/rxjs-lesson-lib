@@ -1,0 +1,40 @@
+.timeline{
+    background: black;
+    color: white;
+    padding: 10px 0px;
+    font-family: Consolas;
+    font-size: 12px;
+    margin: 5px 0px;
+	position:relative;
+	height:14px;
+}
+.timeline .label{
+	position:absolute;
+	right: 0px;
+	top: 0px;
+	font-family: Verdana;
+	font-size: 20px;
+	color: #777;
+	padding-right:10px;
+}
+.timeline .host{
+	position:absolute;
+}
+.emit{
+	padding: 0 5px;
+    background: #337ab7;
+    text-align: center;
+    border-radius: 10px;
+    margin:0 5px;
+}
+.completed{
+	border-left: 5px solid #0f0;
+    padding: 0 5px;
+    margin: 0 5px;
+}
+.error:before{
+	content: "X";
+    padding: 0 5px;
+    margin: 0 5px;
+    color: #f00;
+}

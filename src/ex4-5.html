@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>rxjs</title>
+    <script src="lib/rx.all.min.js"></script>
+	<script src="lib/timeline.js"></script>
+    <link rel="stylesheet" type="text/css" href="lib/timeline.css">       
+</head>
+<body>
+	<script>
+		window.onload = function(){
+			var TL = TimelineCanvas;
+			var timelines = [
+				new TL("source"),
+				new TL("flatMapObserver")
+			];
+			var source = Rx.Observable.timer(0,3000).take(5);
+			var target = source.flatMapObserver(
+					function (x, i) {
+						return Rx.Observable.interval(1000)
+							.map(function(d){ return x + '-' + d;})
+							.take(2);
+					},
+					function (err) {
+						return Rx.Observable.return("<ERROR>");
+					},
+					function () {
+						return Rx.Observable.return("<END>");
+					});
+			[source,target].forEach(function(s,i){
+				s.subscribe(
+					function (x) { timelines[i].next(x); },
+					function (err) { timelines[i].error(err); },
+					function () { timelines[i].completed(); }
+				);
+			});
+		}    	
+	</script>
+</body>
+</html>

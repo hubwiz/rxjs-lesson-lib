@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>rxjs</title>
+    <script src="lib/rx.all.min.js"></script>
+	<style>
+		@font-face {
+		  font-family:"LED";
+		  src:url("font/LED.eot?") format("eot"),
+		  url("font/LED.woff") format("woff"),
+		  url("font/LED.ttf") format("truetype"),
+		  url("font/LED.svg#LED") format("svg");
+		  font-weight:normal;
+		  font-style:normal;
+		}
+		.ez-led{
+		  font-family : "LED";
+		  font-size : 40px;
+		  background : #70d355;
+		  width: 300px;
+		  height:60px;
+		  line-height : 60px;
+		  text-align : right;
+		  padding : 10px;
+		  letter-spacing:5px;
+		}
+	</style>
+</head>
+<body>
+	<div class="ez-led" id="clock">00:00:00</div>
+	<script>
+		window.onload = function(){
+			var elClock = document.getElementById("clock");
+			var getTime =  function(){
+				var _ = ['00','01','02','03','04','05','06','07','08','09'],  //补零
+					d = new Date(), h = d.getHours(),m = d.getMinutes(),s = d.getSeconds();
+				return [_[h]||h,_[m]||m,_[s]||s].join(":");
+			};
+			setInterval(function(){
+				elClock.textContent = getTime();
+			},1000);
+		}	
+	</script>
+</body>
+</html>
